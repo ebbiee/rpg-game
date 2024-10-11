@@ -9,7 +9,7 @@ import dude from '../assets/dude.png';
 let config = {
     type: Phaser.AUTO,
     height: window.innerHeight,
-    width: window.innerWidth,
+    width: window.innerWidth,           
     physics: {
         default: 'arcade',
         arcade: {
@@ -55,10 +55,11 @@ function create() {
     platforms.create(window.innerWidth * 0.9, window.innerHeight * 0.3, 'ground');
 
     player = this.physics.add.sprite(100, window.innerHeight - 150, 'dude');
-    
+    //to bounce off surfaces
     player.setBounce(0.2);
+    //for the player not to go off screen
     player.setCollideWorldBounds(true);
-
+//using the frames to control the player movements(the frame are inside the images)
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -81,7 +82,6 @@ function create() {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    // Create stars group and position stars dynamically
     stars = this.physics.add.group({
         key: 'star',
         repeat: 11,
@@ -92,21 +92,17 @@ function create() {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
 
-    // Create bombs group
     bombs = this.physics.add.group();
 
-    // Add a score text
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
-    // Physics collisions
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
-
-    // Overlap detection for player and stars
+//to dectect the player collecting the star
     this.physics.add.overlap(player, stars, collectStar, null, this);
     
-    // Collision detection for player and bombs
+//to detect the playerr hitting the bomb
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
 
@@ -159,6 +155,7 @@ function collectStar (player, star)
         let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
         let bomb = bombs.create(x, 16, 'bomb');
+        //bounce without stopping
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
